@@ -1,0 +1,17 @@
+nodes:
+  - name: "ComfyUI-AnimateDiff-Evolved"
+    url: "https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved"
+    install_type: "git-clone"
+
+  - name: "ComfyUI-Advanced-ControlNet"
+    url: "https://github.com/Kosinkadink/ComfyUI-Advanced-ControlNet"
+    install_type: "git-clone"
+
+models:
+  - name: "sd_xl_base_18897557.0.safetensors"
+    url: "https://civitai.com/api/download/models/299716"
+    dest: "./ComfyUI/models/checkpoints/"
+
+  - name: "mod_sdxl.safetensors"
+    url: "https://civitai.com/api/download/models/299716"
+    dest: "./ComfyUI/models/checkpoints/"
