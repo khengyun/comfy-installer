@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: write # Để push code, tạo tag, release
-  id-token: write # Để publish lên PyPI (Trusted Publishing)
 
 jobs:
   # 1. Build và kiểm tra xem có lỗi gì không trước khi làm các bước khác
