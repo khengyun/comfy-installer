@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+comfyui*.log
+
+# environment
+venv
+.vscode
+.env
+
+# system
+.DS_Store
+
+# user
+ComfyUI/
+test.py
+output/
+
+generation_status.txt
+/build
+/comfy_install.egg-info
+/comfy_runner.egg-info
+/examples
+/data

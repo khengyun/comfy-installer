@@ -1,0 +1,14 @@
+gitdb
+GitPython
+fuzzywuzzy
+python-Levenshtein
+websocket-client
+colorlog
+psutil
+requests
+tqdm
+python-dotenv
+onnxruntime-gpu
+portalocker
+toml
+tabulate
