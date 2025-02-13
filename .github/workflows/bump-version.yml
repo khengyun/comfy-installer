@@ -1,6 +1,7 @@
 name: Bump version and create tag
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
