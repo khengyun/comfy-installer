@@ -10,7 +10,7 @@ def load_requirements():
 
 setup(
     name="comfy-installer",
-    version="0.1.4",
+    version="0.1.5",
     description="A CLI tool to install custom nodes for ComfyUI using YAML configuration.",
     author="khengyun",
     author_email="khaangnguyeen@gmail.com",
