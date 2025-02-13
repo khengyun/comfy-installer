@@ -8,7 +8,7 @@ import tarfile
 import zipfile
 import json
 from tqdm import tqdm
-from constants import (
+from comfy_installer.constants import (
     APP_PORT,
     COMFY_MODELS_BASE_PATH,
     COMFY_MODEL_PATH_LIST,

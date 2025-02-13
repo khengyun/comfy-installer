@@ -15,19 +15,20 @@ setup(
     name="comfy-installer",
     version="0.1.11",
     description="A CLI tool to install custom nodes for ComfyUI using YAML configuration.",
-    long_description=long_description, 
-    long_description_content_type="text/markdown",  
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author="khengyun",
     author_email="khaangnguyeen@gmail.com",
     packages=find_packages(),
     install_requires=load_requirements(),
     entry_points={
         "console_scripts": [
-            "comfy-installer=cli:main",
+            "comfy-installer=comfy_installer.cli:main",
         ],
     },
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
     ],
+    python_requires='>=3.9',
 )

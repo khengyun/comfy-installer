@@ -1,10 +1,10 @@
 import yaml
 import os
 from tabulate import tabulate
-from utils.comfy.api import ComfyAPI
-from utils.file_downloader import FileDownloader, ModelDownloader
-from utils.node_installer import get_node_installer
-from utils.logger import LoggingType, app_logger
+from comfy_installer.utils.comfy.api import ComfyAPI
+from comfy_installer.utils.file_downloader import FileDownloader, ModelDownloader
+from comfy_installer.utils.node_installer import get_node_installer
+from comfy_installer.utils.logger import LoggingType, app_logger
 
 class YamlInstallers:
     def __init__(self, yaml_file_path):

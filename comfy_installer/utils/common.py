@@ -6,7 +6,7 @@ import shutil
 import psutil
 import toml
 
-from constants import COMFY_BASE_PATH
+from comfy_installer.constants import COMFY_BASE_PATH
 
 from .logger import app_logger
 

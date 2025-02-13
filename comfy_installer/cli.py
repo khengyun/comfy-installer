@@ -10,7 +10,7 @@ If --install-dir is not provided, the current working directory (".") is used.
 
 import argparse
 import os
-from ComfyInstallers import YamlInstallers  # adjust the import path as needed
+from comfy_installer.installers import YamlInstallers
 
 def main():
     parser = argparse.ArgumentParser(
