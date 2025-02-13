@@ -2,6 +2,7 @@ name: Upload Python Package to PyPI
 
 # Trigger workflow khi có một release mới được publish
 on:
+  workflow_dispatch:
   release:
     types: [published]
 
