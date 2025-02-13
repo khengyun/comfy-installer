@@ -8,10 +8,15 @@ def load_requirements():
             return f.read().splitlines()
     return []
 
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
 setup(
     name="comfy-installer",
     version="0.1.9",
     description="A CLI tool to install custom nodes for ComfyUI using YAML configuration.",
+    long_description=long_description, 
+    long_description_content_type="text/markdown",  
     author="khengyun",
     author_email="khaangnguyeen@gmail.com",
     packages=find_packages(),
