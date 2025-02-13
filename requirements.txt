@@ -12,3 +12,4 @@ onnxruntime-gpu
 portalocker
 toml
 tabulate
+bump2version
