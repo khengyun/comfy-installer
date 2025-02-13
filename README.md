@@ -36,7 +36,7 @@ uv add comfy-installer
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/comfy-installer.git
+   git clone https://github.com/khengyun/comfy-installer.git
    cd comfy-installer
    ```
 2. Install dependencies:
