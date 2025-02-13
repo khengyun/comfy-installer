@@ -1,18 +1,21 @@
 import os
 from setuptools import setup, find_packages
 
-# Read dependencies from requirements.txt
-with open("requirements.txt", "r") as f:
-    requirements = f.read().splitlines()
+def load_requirements():
+    req_path = os.path.join(os.path.dirname(__file__), "requirements.txt")
+    if os.path.exists(req_path):
+        with open(req_path, "r") as f:
+            return f.read().splitlines()
+    return []
 
 setup(
     name="comfy-install",
     version="0.1.0",
     description="A CLI tool to install custom nodes for ComfyUI using YAML configuration.",
-    author="Your Name",
-    author_email="your.email@example.com",
+    author="khengyun",
+    author_email="khaangnguyeen@gmail.com",
     packages=find_packages(),
-    install_requires=requirements,
+    install_requires=load_requirements(),
     entry_points={
         "console_scripts": [
             "comfy-install=cli:main",
