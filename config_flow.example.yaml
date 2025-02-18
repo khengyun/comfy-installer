@@ -10,8 +10,12 @@ nodes:
 models:
   - name: "sd_xl_base_18897557.0.safetensors"
     url: "https://civitai.com/api/download/models/299716"
-    dest: "./ComfyUI/models/checkpoints/"
+    type: "checkpoints"
 
   - name: "mod_sdxl.safetensors"
     url: "https://civitai.com/api/download/models/299716"
-    dest: "./ComfyUI/models/checkpoints/"
+    type: "checkpoints"
+
+  - name: "v1-5-pruned-emaonly-fp16.safetensors"
+    url: "https://huggingface.co/Comfy-Org/stable-diffusion-v1-5-archive/resolve/main/v1-5-pruned-emaonly-fp16.safetensors?download=true"
+    type: "checkpoints"

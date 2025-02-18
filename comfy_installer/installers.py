@@ -17,6 +17,9 @@ class YamlInstallers:
         self.yaml_file_path = yaml_file_path
         self.model_downloader = ModelDownloader()
         self.node_installer = get_node_installer()
+        
+        # hardcode
+        self.model_dir = os.path.join(self.node_installer.comfy_path, "models")
 
     def load_yaml(self):
         """
@@ -44,8 +47,9 @@ class YamlInstallers:
 
         if 'nodes' in data:
             node_results = self._install_nodes(data['nodes'])
-        if 'models' in data:
-            model_results = self._download_models(data['models'])
+        
+        # if 'models' in data:
+        #     model_results = self._download_models(data['models'], self.model_dir)
         self._show_summary(node_results, model_results)
 
     def _install_nodes(self, nodes):
@@ -77,22 +81,30 @@ class YamlInstallers:
                 app_logger.log(LoggingType.INFO, f"Successfully installed node {node_name}")
         return results
 
-    def _download_models(self, models):
+    def _download_models(self, models, model_dir):
         """
-        Downloads models from the YAML configuration.
-
-        Args:
-            models (list): List of model configurations.
-
-        Returns:
-            list: A list of tuples (model_name, status, details) for each model.
+        Downloads models specified in the YAML configuration.
+        Returns a list of tuples (model_name, status, details) for each model.
         """
         results = []
         print("Downloading models...")
         for model in models:
             model_name = model.get("name", "Unnamed Model")
+            url = model.get("url")
+            type = model.get("type")
+            dest = os.path.join(model_dir, type)
             app_logger.log(LoggingType.INFO, f"Downloading model {model_name}")
-            status_bool, similar_models, file_status = self.model_downloader.download_model(model["name"])
+
+            filename, yaml_url, yaml_dest = self.model_downloader.get_model_details(model_name)
+            if filename is None or yaml_url is None or yaml_dest is None:
+                filename = model_name
+                url = model.get("url")
+                dest = os.path.join(model_dir, type)
+                status_bool, file_status = self.model_downloader.download_file(filename, url, dest)
+                similar_models = []
+            else:
+                status_bool, similar_models, file_status = self.model_downloader.download_model(model_name)
+
             status = "Success" if status_bool else "Failure"
             detail = file_status
             if not status_bool and similar_models:

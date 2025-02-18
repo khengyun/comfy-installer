@@ -16,7 +16,7 @@ MODEL_DOWNLOAD_PATH_LIST = [
     "./data/huggingface_weights.json",
 ]
 COMFY_MODEL_PATH_LIST = [
-    "../ComfyUI/custom_nodes/ComfyUI-Manager/model-list.json",
+    "ComfyUI/custom_nodes/ComfyUI-Manager/model-list.json",
     "./data/extra_comfy_weights.json",
 ]
 

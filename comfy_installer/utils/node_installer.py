@@ -73,26 +73,38 @@ class NodeInstaller:
 
     def clone_comfyui(self):
         """
-        Clones the ComfyUI repository from https://github.com/comfyanonymous/ComfyUI.git
-        into the local ComfyUI folder if it does not already exist.
+        Clones the ComfyUI repository and ComfyUI-Manager repository into the local ComfyUI folder if not already exist.
 
         Returns:
-            bool: True if ComfyUI exists (or is cloned successfully), False otherwise.
-
-        Example:
-            clone_comfyui() -> True
+            bool: True if both ComfyUI and ComfyUI-Manager exist (or cloned successfully), False otherwise.
         """
-        repo_url = "https://github.com/comfyanonymous/ComfyUI.git"
+        comfyui_repo_url = "https://github.com/comfyanonymous/ComfyUI.git"
+        manager_repo_url = "https://github.com/ltdrdata/ComfyUI-Manager.git"
+
+        # Clone ComfyUI
         if not os.path.exists(self.comfy_path):
-            print("ComfyUI not found. Cloning from", repo_url)
+            print("ComfyUI not found. Cloning from", comfyui_repo_url)
             try:
-                repo = git.Repo.clone_from(repo_url, self.comfy_path)
+                git.Repo.clone_from(comfyui_repo_url, self.comfy_path)
                 print("Successfully cloned ComfyUI!")
             except Exception as e:
                 print(f"Error cloning ComfyUI: {e}")
                 return False
         else:
             print("ComfyUI folder already exists.")
+
+        # Clone ComfyUI-Manager
+        if not os.path.exists(self.comfyui_manager_path):
+            print("ComfyUI-Manager not found. Cloning from", manager_repo_url)
+            try:
+                git.Repo.clone_from(manager_repo_url, self.comfyui_manager_path)
+                print("Successfully cloned ComfyUI-Manager!")
+            except Exception as e:
+                print(f"Error cloning ComfyUI-Manager: {e}")
+                return False
+        else:
+            print("ComfyUI-Manager folder already exists.")
+
         return True
 
     def _is_valid_url(self, url):

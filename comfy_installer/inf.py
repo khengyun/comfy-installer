@@ -667,6 +667,8 @@ class ComfyRunner:
             if not res_custom_nodes["status"]:
                 app_logger.log(LoggingType.ERROR, res_custom_nodes["message"])
                 return
+            
+
 
             # download models if not already present
             res_models = self.download_models(
@@ -675,6 +677,7 @@ class ComfyRunner:
                 ignore_model_list,
                 client_id,
             )
+            
             if not res_models[
                 "status"
             ] and not self.gen_status_tracker.is_generation_cancelled(client_id):

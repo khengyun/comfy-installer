@@ -112,7 +112,10 @@ class FileDownloader:
         Returns:
             tuple: A tuple containing a boolean indicating success and the file status.
         """
+        if dest is None:
+            raise ValueError("Destination path cannot be None.")
         os.makedirs(dest, exist_ok=True)
+
 
         # checking if the file is already downloaded
         if self.is_file_downloaded(filename, url, dest):
@@ -176,7 +179,7 @@ class ModelDownloader(FileDownloader):
         download_model(model_name): Downloads a model by its name.
     """
     
-    def __init__(self, model_weights_file_path_list=[], download_similar_model=False):
+    def __init__(self, model_weights_file_path_list=[], download_similar_model=False, yaml_models=None):
         """
         Initializes a new instance of the ModelDownloader class.
 
@@ -188,24 +191,41 @@ class ModelDownloader(FileDownloader):
         self.model_download_dict = self.comfy_model_dict = {}
         self.download_similar_model = download_similar_model
         self.comfy_api = ComfyAPI(SERVER_ADDR, APP_PORT)
+        
+        
+        # Load file
+        self.load_comfy_models()
+        
+        
+        print("self.comfy_model_dict: ", self.comfy_model_dict)
 
-        # loading local data
         for model_weights_file_path in model_weights_file_path_list:
-            current_dir = find_git_root(os.path.dirname(__file__))  # finding root
-            file_path = os.path.abspath(
-                os.path.join(current_dir, model_weights_file_path)
-            )
+            current_dir = find_git_root(os.path.dirname(__file__))
+            file_path = os.path.abspath(os.path.join(current_dir, model_weights_file_path))
             with open(file_path, "r", encoding="utf-8") as file:
                 data = json.load(file)
                 for model_name in data:
                     if model_name not in self.model_download_dict:
+                        print({
+                            "url": data[model_name]["url"],
+                            "dest": convert_to_relative_path(
+                                data[model_name]["dest"], base_comfy=COMFY_MODELS_BASE_PATH
+                            ),
+                        })
                         self.model_download_dict[model_name] = {
                             "url": data[model_name]["url"],
                             "dest": convert_to_relative_path(
-                                data[model_name]["dest"],
-                                base_comfy=COMFY_MODELS_BASE_PATH,
+                                data[model_name]["dest"], base_comfy=COMFY_MODELS_BASE_PATH
                             ),
                         }
+        print("COMFY_MODELS_BASE_PATH: ", COMFY_MODELS_BASE_PATH)
+        if yaml_models:
+            for model in yaml_models:
+                model_name = model["name"]
+                self.model_download_dict[model_name] = {
+                    "url": model["url"],
+                    "dest": os.path.join(COMFY_MODELS_BASE_PATH, "models", model["type"]),
+                }
 
     def _get_similar_models(self, model_name):
         """
@@ -233,12 +253,14 @@ class ModelDownloader(FileDownloader):
         Ignores models that have incorrect details in the Comfy Manager data.
         """
         self.comfy_model_dict = {}
-        ignore_manager_models = ["sd_xl_base_1.0.safetensors", "sd_xl_refiner_1.0_0.9vae.safetensors"]
+        # ignore_manager_models = ["sd_xl_base_1.0.safetensors", "sd_xl_refiner_1.0_0.9vae.safetensors"]
+        print("COMFY_MODEL_PATH_LIST: ", COMFY_MODEL_PATH_LIST)
         for model_list_path in COMFY_MODEL_PATH_LIST:
             current_dir = find_git_root(os.path.dirname(__file__))  # finding root
             model_list_path = os.path.abspath(
                 os.path.join(current_dir, model_list_path)
             )
+            
             if not os.path.exists(model_list_path):
                 app_logger.log(
                     LoggingType.DEBUG, f"model list path not found - {model_list_path}"
@@ -247,10 +269,13 @@ class ModelDownloader(FileDownloader):
 
             with open(model_list_path, "rb") as file:
                 model_list = json.load(file)["models"]
+                
+            print("[load_comfy_models][model_list_path]: ", model_list_path)
 
             for model in model_list:
-                if model_list_path.endswith("ComfyUI-Manager/model-list.json") and model["filename"] in ignore_manager_models:
-                    continue
+                print("[model]: ", model)
+                # if model_list_path.endswith("ComfyUI-Manager/model-list.json"):
+                #     continue
                 
                 if model["filename"] not in self.comfy_model_dict:
                     self.comfy_model_dict[model["filename"]] = [model]
@@ -267,6 +292,7 @@ class ModelDownloader(FileDownloader):
         Returns:
             tuple: A tuple containing the filename, URL, and destination path of the model.
         """
+        print("self.comfy_model_dict: ", self.comfy_model_dict)
         if model_name in self.comfy_model_dict:
             for model in self.comfy_model_dict[model_name]:
                 if model["save_path"] and model["save_path"].endswith("default"):
@@ -290,7 +316,7 @@ class ModelDownloader(FileDownloader):
 
         return None, None, None
 
-    def download_model(self, model_name):
+    def download_model(self, model_name="", type=""):
         """
         Downloads a model by its name. Handles cases where the model is in a subdirectory.
 
@@ -307,6 +333,7 @@ class ModelDownloader(FileDownloader):
         )
         file_status = FileStatus.NEW_DOWNLOAD.value
         filename, url, dest = self.get_model_details(model_name)
+        print("[filename, url, dest]: ", filename, url, dest )
 
         if filename and url and dest:
             _, file_status = self.download_file(filename=filename, url=url, dest=dest)
@@ -320,5 +347,5 @@ class ModelDownloader(FileDownloader):
                 pass
             else:
                 return (False, similar_models, FileStatus.UNAVAILABLE.value)
-
+        print("download_model: ",True, [], file_status)
         return (True, [], file_status)
