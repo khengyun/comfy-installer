@@ -48,8 +48,9 @@ class YamlInstallers:
         if 'nodes' in data:
             node_results = self._install_nodes(data['nodes'])
         
-        # if 'models' in data:
-        #     model_results = self._download_models(data['models'], self.model_dir)
+        if 'models' in data:
+            model_results = self._download_models(data['models'], self.model_dir)
+            
         self._show_summary(node_results, model_results)
 
     def _install_nodes(self, nodes):
