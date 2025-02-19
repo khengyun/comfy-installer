@@ -92,7 +92,7 @@ class YamlInstallers:
         for model in models:
             model_name = model.get("name", "Unnamed Model")
             url = model.get("url")
-            type = type if type is not None else "checkpoints"
+            type = model.get("type") if model.get("type") is not None else "checkpoints"
             dest = os.path.join(model_dir, type)
             app_logger.log(LoggingType.INFO, f"Downloading model {model_name}")
 
