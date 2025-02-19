@@ -13,7 +13,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="comfy-installer",
-    version="0.1.16",
+    version="0.1.17",
     description="A CLI tool to install custom nodes for ComfyUI using YAML configuration.",
     long_description=long_description,
     long_description_content_type="text/markdown",
