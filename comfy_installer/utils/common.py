@@ -118,10 +118,18 @@ def clear_directory(directory):
 
 # recursively moves up directories till it finds the .git file (root of the repo)
 def find_git_root(path):
-    if ".git" in os.listdir(path):
+    # If a .git directory exists in the current path, we've found the git root.
+    if os.path.isdir(os.path.join(path, ".git")):
         return path
 
+    # Compute the parent directory.
     parent_path = os.path.abspath(os.path.join(path, os.pardir))
+    
+    # If the parent directory is the same as the current, we've reached the root.
+    if parent_path == path:
+        return path  # or you could choose to raise an exception or return None
+
+    # Recurse upwards.
     return find_git_root(parent_path)
 
 
