@@ -14,6 +14,11 @@ from comfy_installer.constants import (
     COMFY_MODEL_PATH_LIST,
     SERVER_ADDR,
 )
+
+from collections import defaultdict
+from pathlib import Path
+
+
 from .comfy.api import ComfyAPI
 
 from .common import (
@@ -197,7 +202,7 @@ class ModelDownloader(FileDownloader):
         self.load_comfy_models()
         
         
-        print("self.comfy_model_dict: ", self.comfy_model_dict)
+        # print("self.comfy_model_dict: ", self.comfy_model_dict)
 
         for model_weights_file_path in model_weights_file_path_list:
             current_dir = find_git_root(os.path.dirname(__file__))
@@ -245,6 +250,10 @@ class ModelDownloader(FileDownloader):
         similar_models += fuzzy_text_match(model_list, model_name)
 
         return similar_models
+    
+    
+    
+    
 
     def load_comfy_models(self):
         """
@@ -252,35 +261,36 @@ class ModelDownloader(FileDownloader):
 
         Ignores models that have incorrect details in the Comfy Manager data.
         """
-        self.comfy_model_dict = {}
-        # ignore_manager_models = ["sd_xl_base_1.0.safetensors", "sd_xl_refiner_1.0_0.9vae.safetensors"]
-        print("COMFY_MODEL_PATH_LIST: ", COMFY_MODEL_PATH_LIST)
-        for model_list_path in COMFY_MODEL_PATH_LIST:
-            current_dir = find_git_root(os.path.dirname(__file__))  # finding root
-            model_list_path = os.path.abspath(
-                os.path.join(current_dir, model_list_path)
-            )
+        self.comfy_model_dict = defaultdict(list)
+        print("Path.cwd(): ", Path.cwd())
+        current_dir = Path.cwd()
+        app_logger.log(LoggingType.DEBUG, f"COMFY_MODEL_PATH_LIST: {COMFY_MODEL_PATH_LIST}")
+
+        for relative_path in COMFY_MODEL_PATH_LIST:
+            model_list_path = (current_dir / relative_path).resolve()
             
-            if not os.path.exists(model_list_path):
-                app_logger.log(
-                    LoggingType.DEBUG, f"model list path not found - {model_list_path}"
-                )
+            if not model_list_path.exists():
+                app_logger.log(LoggingType.DEBUG, f"Model list path not found: {model_list_path}")
                 continue
 
-            with open(model_list_path, "rb") as file:
-                model_list = json.load(file)["models"]
-                
-            print("[load_comfy_models][model_list_path]: ", model_list_path)
+            try:
+                with model_list_path.open("r", encoding="utf-8") as file:
+                    data = json.load(file)
+                    models = data.get("models", [])
+            except Exception as e:
+                app_logger.log(LoggingType.ERROR, f"Error loading {model_list_path}: {e}")
+                continue
 
-            for model in model_list:
-                print("[model]: ", model)
-                # if model_list_path.endswith("ComfyUI-Manager/model-list.json"):
-                #     continue
-                
-                if model["filename"] not in self.comfy_model_dict:
-                    self.comfy_model_dict[model["filename"]] = [model]
-                else:
-                    self.comfy_model_dict[model["filename"]].append(model)
+            app_logger.log(LoggingType.DEBUG, f"[load_comfy_models] Processing: {model_list_path}")
+
+            for model in models:
+                app_logger.log(LoggingType.DEBUG, f"[model]: {model}")
+                self.comfy_model_dict[model["filename"]].append(model)
+
+                    
+                    
+                    
+                    
 
     def get_model_details(self, model_name):
         """
@@ -292,7 +302,7 @@ class ModelDownloader(FileDownloader):
         Returns:
             tuple: A tuple containing the filename, URL, and destination path of the model.
         """
-        print("self.comfy_model_dict: ", self.comfy_model_dict)
+        # print("self.comfy_model_dict: ", self.comfy_model_dict)
         if model_name in self.comfy_model_dict:
             for model in self.comfy_model_dict[model_name]:
                 if model["save_path"] and model["save_path"].endswith("default"):

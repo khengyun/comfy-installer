@@ -1,8 +1,7 @@
 import yaml
 import os
 from tabulate import tabulate
-from comfy_installer.utils.comfy.api import ComfyAPI
-from comfy_installer.utils.file_downloader import FileDownloader, ModelDownloader
+from comfy_installer.utils.file_downloader import  ModelDownloader
 from comfy_installer.utils.node_installer import get_node_installer
 from comfy_installer.utils.logger import LoggingType, app_logger
 
